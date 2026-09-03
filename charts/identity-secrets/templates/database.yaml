@@ -1,0 +1,17 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: keycloak-database
+spec:
+  refreshInterval: {{ .Values.refreshInterval | quote }}
+  secretStoreRef:
+    name: {{ .Values.secretStore.name | quote }}
+    kind: {{ .Values.secretStore.kind | quote }}
+  target:
+    name: keycloak-database
+    creationPolicy: Owner
+  data:
+    - secretKey: password
+      remoteRef:
+        key: {{ .Values.postgresql.remoteKey | quote }}
+        property: password

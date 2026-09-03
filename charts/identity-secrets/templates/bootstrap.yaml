@@ -1,0 +1,21 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: keycloak-bootstrap
+spec:
+  refreshInterval: {{ .Values.refreshInterval | quote }}
+  secretStoreRef:
+    name: {{ .Values.secretStore.name | quote }}
+    kind: {{ .Values.secretStore.kind | quote }}
+  target:
+    name: keycloak-bootstrap
+    creationPolicy: Owner
+  data:
+    - secretKey: KC_BOOTSTRAP_ADMIN_USERNAME
+      remoteRef:
+        key: {{ .Values.keycloak.remoteKey | quote }}
+        property: username
+    - secretKey: KC_BOOTSTRAP_ADMIN_PASSWORD
+      remoteRef:
+        key: {{ .Values.keycloak.remoteKey | quote }}
+        property: password

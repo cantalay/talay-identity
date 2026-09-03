@@ -1,0 +1,6 @@
+apiVersion: v2
+name: identity-secrets
+description: ExternalSecret resources for Keycloak
+type: application
+version: 0.1.0
+appVersion: "1.0"

@@ -1,0 +1,11 @@
+keycloak_url = "https://auth.cantalay.com"
+argocd_url   = "https://argocd.cantalay.com"
+web_redirect_uris = [
+  "https://app.cantalay.com/*",
+  "https://app.dev.cantalay.com/*",
+]
+web_origins = [
+  "https://app.cantalay.com",
+  "https://app.dev.cantalay.com",
+]
+mobile_redirect_uris = ["talay://oauth/callback"]
