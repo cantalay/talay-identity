@@ -1,86 +1,51 @@
-data "keycloak_realm" "platform" {
-  realm = var.platform_realm
+module "keycloak_configuration" {
+  source = "../../modules/keycloak-configuration"
+
+  keycloak_url                     = var.keycloak_url
+  platform_realm                   = var.platform_realm
+  platform_admin_username          = var.platform_admin_username
+  argocd_url                       = var.argocd_url
+  vault_url                        = var.vault_url
+  vault_oidc_client_secret         = var.vault_oidc_client_secret
+  vault_oidc_client_secret_version = var.vault_oidc_client_secret_version
 }
 
-data "keycloak_user" "platform_admin" {
-  realm_id = data.keycloak_realm.platform.id
-  username = var.platform_admin_username
+moved {
+  from = data.keycloak_realm.platform
+  to   = module.keycloak_configuration.data.keycloak_realm.platform
 }
 
-resource "keycloak_group" "platform_admins" {
-  realm_id    = data.keycloak_realm.platform.id
-  name        = "talay-platform-admins"
-  description = "Administrators for Talay platform services"
+moved {
+  from = data.keycloak_user.platform_admin
+  to   = module.keycloak_configuration.data.keycloak_user.platform_admin
 }
 
-resource "keycloak_user_groups" "platform_admin" {
-  realm_id   = data.keycloak_realm.platform.id
-  user_id    = data.keycloak_user.platform_admin.id
-  group_ids  = [keycloak_group.platform_admins.id]
-  exhaustive = false
+moved {
+  from = keycloak_group.platform_admins
+  to   = module.keycloak_configuration.keycloak_group.platform_admins
 }
 
-resource "keycloak_openid_client" "argocd" {
-  realm_id  = data.keycloak_realm.platform.id
-  client_id = "talay-argocd"
-  name      = "Talay Argo CD"
-  enabled   = true
-
-  access_type                     = "PUBLIC"
-  standard_flow_enabled           = true
-  implicit_flow_enabled           = false
-  direct_access_grants_enabled    = false
-  pkce_code_challenge_method      = "S256"
-  valid_redirect_uris             = ["${trimsuffix(var.argocd_url, "/")}/auth/callback"]
-  valid_post_logout_redirect_uris = ["${trimsuffix(var.argocd_url, "/")}/"]
-  web_origins                     = [trimsuffix(var.argocd_url, "/")]
-  base_url                        = "${trimsuffix(var.argocd_url, "/")}/"
-  full_scope_allowed              = false
+moved {
+  from = keycloak_user_groups.platform_admin
+  to   = module.keycloak_configuration.keycloak_user_groups.platform_admin
 }
 
-resource "keycloak_openid_group_membership_protocol_mapper" "argocd_groups" {
-  realm_id   = data.keycloak_realm.platform.id
-  client_id  = keycloak_openid_client.argocd.id
-  name       = "groups"
-  claim_name = "groups"
-  full_path  = false
-
-  add_to_id_token     = true
-  add_to_access_token = true
-  add_to_userinfo     = true
+moved {
+  from = keycloak_openid_client.argocd
+  to   = module.keycloak_configuration.keycloak_openid_client.argocd
 }
 
-resource "keycloak_openid_client" "vault" {
-  realm_id  = data.keycloak_realm.platform.id
-  client_id = "talay-vault"
-  name      = "Talay Vault"
-  enabled   = true
-
-  access_type                  = "CONFIDENTIAL"
-  standard_flow_enabled        = true
-  implicit_flow_enabled        = false
-  direct_access_grants_enabled = false
-  valid_redirect_uris = [
-    "${trimsuffix(var.vault_url, "/")}/ui/vault/auth/oidc/oidc/callback",
-    "http://localhost:8250/oidc/callback",
-  ]
-  valid_post_logout_redirect_uris = ["${trimsuffix(var.vault_url, "/")}/ui/"]
-  web_origins                     = [trimsuffix(var.vault_url, "/")]
-  base_url                        = "${trimsuffix(var.vault_url, "/")}/ui/"
-  full_scope_allowed              = false
-
-  client_secret_wo         = var.vault_oidc_client_secret
-  client_secret_wo_version = var.vault_oidc_client_secret_version
+moved {
+  from = keycloak_openid_group_membership_protocol_mapper.argocd_groups
+  to   = module.keycloak_configuration.keycloak_openid_group_membership_protocol_mapper.argocd_groups
 }
 
-resource "keycloak_openid_group_membership_protocol_mapper" "vault_groups" {
-  realm_id   = data.keycloak_realm.platform.id
-  client_id  = keycloak_openid_client.vault.id
-  name       = "groups"
-  claim_name = "groups"
-  full_path  = false
+moved {
+  from = keycloak_openid_client.vault
+  to   = module.keycloak_configuration.keycloak_openid_client.vault
+}
 
-  add_to_id_token     = true
-  add_to_access_token = true
-  add_to_userinfo     = true
+moved {
+  from = keycloak_openid_group_membership_protocol_mapper.vault_groups
+  to   = module.keycloak_configuration.keycloak_openid_group_membership_protocol_mapper.vault_groups
 }

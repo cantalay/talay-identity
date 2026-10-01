@@ -1,6 +1,6 @@
 variable "kubeconfig_path" {
   type    = string
-  default = "../talay-cluster/stacks/bootstrap/kubeconfig.yaml"
+  default = "../../../talay-cluster/stacks/bootstrap/kubeconfig.yaml"
 }
 
 variable "keycloak_domain" {

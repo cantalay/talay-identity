@@ -9,12 +9,8 @@ resource "helm_release" "identity_secrets" {
 
   values = [yamlencode({
     refreshInterval = "1h"
-    postgresql = {
-      remoteKey = var.vault_postgresql_key
-    }
-    keycloak = {
-      remoteKey = var.vault_keycloak_key
-    }
+    postgresql       = { remoteKey = var.vault_postgresql_key }
+    keycloak         = { remoteKey = var.vault_keycloak_key }
   })]
 }
 
@@ -43,49 +39,22 @@ resource "helm_release" "keycloak" {
       existingSecret    = "keycloak-database"
       existingSecretKey = "password"
     }
-    extraEnvFrom = yamlencode([{
-      secretRef = {
-        name = "keycloak-bootstrap"
-      }
-    }])
+    extraEnvFrom = yamlencode([{ secretRef = { name = "keycloak-bootstrap" } }])
     extraEnv = yamlencode([
-      {
-        name  = "KC_HOSTNAME"
-        value = var.keycloak_domain
-      },
-      {
-        name  = "KC_HOSTNAME_STRICT"
-        value = "true"
-      },
-      {
-        name  = "KC_PROXY_HEADERS"
-        value = "xforwarded"
-      },
-      {
-        name  = "KC_LOG_CONSOLE_OUTPUT"
-        value = "json"
-      },
+      { name = "KC_HOSTNAME", value = var.keycloak_domain },
+      { name = "KC_HOSTNAME_STRICT", value = "true" },
+      { name = "KC_PROXY_HEADERS", value = "xforwarded" },
+      { name = "KC_LOG_CONSOLE_OUTPUT", value = "json" },
     ])
     proxy = {
       enabled = true
       mode    = "forwarded"
-      http = {
-        enabled = true
-      }
+      http    = { enabled = true }
     }
-    http = {
-      relativePath           = "/"
-      managementRelativePath = "/"
-    }
-    health = {
-      enabled = true
-    }
-    metrics = {
-      enabled = true
-    }
-    serviceMonitor = {
-      enabled = false
-    }
+    http = { relativePath = "/", managementRelativePath = "/" }
+    health  = { enabled = true }
+    metrics = { enabled = true }
+    serviceMonitor = { enabled = false }
     podAnnotations = {
       "prometheus.io/scrape" = "true"
       "prometheus.io/port"   = "9000"
@@ -94,29 +63,16 @@ resource "helm_release" "keycloak" {
     ingress = {
       enabled          = true
       ingressClassName = "traefik"
-      annotations = {
-        "cert-manager.io/cluster-issuer" = "letsencrypt"
-      }
+      annotations      = { "cert-manager.io/cluster-issuer" = "letsencrypt" }
       rules = [{
-        host = var.keycloak_domain
-        paths = [{
-          path     = "/"
-          pathType = "Prefix"
-        }]
+        host  = var.keycloak_domain
+        paths = [{ path = "/", pathType = "Prefix" }]
       }]
-      tls = [{
-        secretName = "keycloak-tls"
-        hosts      = [var.keycloak_domain]
-      }]
+      tls = [{ secretName = "keycloak-tls", hosts = [var.keycloak_domain] }]
     }
     resources = {
-      requests = {
-        cpu    = "250m"
-        memory = "768Mi"
-      }
-      limits = {
-        memory = "1536Mi"
-      }
+      requests = { cpu = "250m", memory = "768Mi" }
+      limits   = { memory = "1536Mi" }
     }
     podDisruptionBudget = {}
   })]
