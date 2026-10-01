@@ -1,11 +1,9 @@
 keycloak_url = "https://auth.cantalay.com"
 argocd_url   = "https://argocd.cantalay.com"
-web_redirect_uris = [
-  "https://app.cantalay.com/*",
-  "https://app.dev.cantalay.com/*",
-]
-web_origins = [
-  "https://app.cantalay.com",
-  "https://app.dev.cantalay.com",
-]
-mobile_redirect_uris = ["talay://oauth/callback"]
+vault_url    = "https://vault.cantalay.com"
+
+platform_realm          = "monitoring"
+platform_admin_username = "alicant"
+
+# Supply the confidential client secret at runtime; never commit it:
+# TF_VAR_vault_oidc_client_secret="..." terraform plan
