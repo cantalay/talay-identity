@@ -91,7 +91,7 @@ resource "helm_release" "keycloak" {
       tls = [{ secretName = "keycloak-tls", hosts = [var.keycloak_domain] }]
     }
     resources = {
-      requests = { cpu = "250m", memory = "768Mi" }
+      requests = { cpu = "100m", memory = "768Mi" }
       limits   = { memory = "1536Mi" }
     }
     podDisruptionBudget = {}
