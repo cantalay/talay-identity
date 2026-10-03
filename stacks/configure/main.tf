@@ -38,6 +38,18 @@ module "vitafinder_identity" {
   ]
 }
 
+module "hello_identity" {
+  source = "../../modules/application-identity"
+
+  keycloak_url = var.keycloak_url
+  realm_name   = "hello"
+  display_name = "Talay Hello"
+  browser_clients = {
+    web = { root_url = var.hello_web_url }
+  }
+  realm_roles = ["user", "admin"]
+}
+
 moved {
   from = data.keycloak_realm.platform
   to   = module.keycloak_configuration.data.keycloak_realm.platform

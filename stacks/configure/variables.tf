@@ -47,3 +47,9 @@ variable "vitafinder_admin_url" {
   type        = string
   default     = "https://admin.vitafinder.cantalay.com"
 }
+
+variable "hello_web_url" {
+  description = "Public Talay Hello web URL."
+  type        = string
+  default     = "https://hello.cantalay.com"
+}
