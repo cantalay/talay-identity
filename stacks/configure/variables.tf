@@ -35,3 +35,15 @@ variable "vault_oidc_client_secret_version" {
   type        = string
   default     = "1"
 }
+
+variable "vitafinder_storefront_url" {
+  description = "Public VitaFinder storefront URL."
+  type        = string
+  default     = "https://vitafinder.cantalay.com"
+}
+
+variable "vitafinder_admin_url" {
+  description = "Public VitaFinder admin URL."
+  type        = string
+  default     = "https://admin.vitafinder.cantalay.com"
+}

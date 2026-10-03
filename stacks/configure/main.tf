@@ -10,6 +10,27 @@ module "keycloak_configuration" {
   vault_oidc_client_secret_version = var.vault_oidc_client_secret_version
 }
 
+module "vitafinder_identity" {
+  source = "../../modules/application-identity"
+
+  keycloak_url   = var.keycloak_url
+  realm_name     = "vitafinder"
+  display_name   = "VitaFinder"
+  storefront_url = var.vitafinder_storefront_url
+  admin_url      = var.vitafinder_admin_url
+  realm_roles = [
+    "admin",
+    "auditor",
+    "catalog_editor",
+    "marketing_approver",
+    "marketing_editor",
+    "pricing_analyst",
+    "provider_operator",
+    "support",
+    "user",
+  ]
+}
+
 moved {
   from = data.keycloak_realm.platform
   to   = module.keycloak_configuration.data.keycloak_realm.platform
