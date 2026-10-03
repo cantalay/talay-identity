@@ -9,8 +9,8 @@ resource "helm_release" "identity_secrets" {
 
   values = [yamlencode({
     refreshInterval = "1h"
-    postgresql       = { remoteKey = var.vault_postgresql_key }
-    keycloak         = { remoteKey = var.vault_keycloak_key }
+    postgresql      = { remoteKey = var.vault_postgresql_key }
+    keycloak        = { remoteKey = var.vault_keycloak_key }
   })]
 }
 
@@ -51,9 +51,29 @@ resource "helm_release" "keycloak" {
       mode    = "forwarded"
       http    = { enabled = true }
     }
-    http = { relativePath = "/", managementRelativePath = "/" }
-    health  = { enabled = true }
-    metrics = { enabled = true }
+    http           = { relativePath = "/", managementRelativePath = "/" }
+    health         = { enabled = true }
+    metrics        = { enabled = true }
+    startupProbe   = <<-EOT
+      httpGet:
+        path: /health
+        port: http-internal
+        scheme: HTTP
+      initialDelaySeconds: 15
+      timeoutSeconds: 5
+      failureThreshold: 180
+      periodSeconds: 5
+    EOT
+    readinessProbe = <<-EOT
+      httpGet:
+        path: /health/ready
+        port: http-internal
+        scheme: HTTP
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
+      periodSeconds: 10
+    EOT
     serviceMonitor = { enabled = false }
     podAnnotations = {
       "prometheus.io/scrape" = "true"
