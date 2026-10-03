@@ -22,7 +22,7 @@ module "vitafinder_identity" {
     }
     admin = {
       root_url              = var.vitafinder_admin_url
-      access_token_lifespan = "3m"
+      access_token_lifespan = "180"
     }
   }
   realm_roles = [

@@ -44,3 +44,17 @@ module "example_identity" {
 Browser client'ları public ve PKCE S256'dır; redirect `<root_url>/*` (+ `extra_redirect_uris`), web origin
 `<root_url>`. Uygulama API'leri issuer `https://auth.cantalay.com/realms/<realm>` ve audience `<realm>-api` ile
 JWT doğrular; roller `realm_access.roles` claim'indedir.
+
+### auth-gateway client'ları
+
+`gateway_client_enabled = true` uygulamanın kendi login ekranını auth-gateway (`/auth/<realm>/*`) üzerinden
+kullanmasını sağlar: `<realm>-gateway` (public, direct grant, API audience) ve `<realm>-gateway-admin`
+(manage/query/view-users service account). Admin secret write-only'dir; Vault
+`kv/apps/todogi/keycloak` → `GATEWAY_REALMS_<REALM>_ADMINCLIENTSECRET` alanından her plan/apply'da verilir:
+
+```bash
+export TF_VAR_gateway_admin_client_secrets="{\"hello\":\"$(vault kv get -mount=kv -field=GATEWAY_REALMS_HELLO_ADMINCLIENTSECRET apps/todogi/keycloak)\"}"
+```
+
+Client `access_token_lifespan` değerleri **saniye** cinsindendir (`"300"`); `"5m"` gibi değerler Keycloak'ta token
+üretirken 500'e yol açar.
