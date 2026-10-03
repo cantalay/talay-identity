@@ -1,18 +1,11 @@
 locals {
-  storefront_url = trimsuffix(var.storefront_url, "/")
-  admin_url      = trimsuffix(var.admin_url, "/")
   browser_clients = {
-    storefront = {
-      client_id             = "${var.realm_name}-storefront"
-      name                  = "${var.display_name} Storefront"
-      root_url              = local.storefront_url
-      access_token_lifespan = "5m"
-    }
-    admin = {
-      client_id             = "${var.realm_name}-admin"
-      name                  = "${var.display_name} Admin"
-      root_url              = local.admin_url
-      access_token_lifespan = "3m"
+    for key, client in var.browser_clients : key => {
+      client_id             = "${var.realm_name}-${key}"
+      name                  = coalesce(client.name, "${var.display_name} ${title(key)}")
+      root_url              = trimsuffix(client.root_url, "/")
+      access_token_lifespan = client.access_token_lifespan
+      extra_redirect_uris   = client.extra_redirect_uris
     }
   }
 }
@@ -23,7 +16,7 @@ resource "keycloak_realm" "application" {
   enabled      = true
 
   ssl_required                   = "external"
-  registration_allowed           = true
+  registration_allowed           = var.registration_allowed
   registration_email_as_username = false
   login_with_email_allowed       = true
   duplicate_emails_allowed       = false
@@ -68,7 +61,7 @@ resource "keycloak_role" "realm" {
 
 resource "keycloak_default_roles" "application" {
   realm_id      = keycloak_realm.application.id
-  default_roles = [keycloak_role.realm["user"].name]
+  default_roles = [keycloak_role.realm[var.default_role].name]
 }
 
 resource "keycloak_openid_client" "browser" {
@@ -88,7 +81,7 @@ resource "keycloak_openid_client" "browser" {
 
   root_url                        = each.value.root_url
   base_url                        = "${each.value.root_url}/"
-  valid_redirect_uris             = ["${each.value.root_url}/*"]
+  valid_redirect_uris             = concat(["${each.value.root_url}/*"], each.value.extra_redirect_uris)
   valid_post_logout_redirect_uris = ["${each.value.root_url}/*"]
   web_origins                     = [each.value.root_url]
   full_scope_allowed              = true
@@ -96,6 +89,8 @@ resource "keycloak_openid_client" "browser" {
 }
 
 resource "keycloak_openid_client" "api" {
+  count = var.api_client_enabled ? 1 : 0
+
   realm_id  = keycloak_realm.application.id
   client_id = "${var.realm_name}-api"
   name      = "${var.display_name} API"
@@ -110,13 +105,18 @@ resource "keycloak_openid_client" "api" {
 }
 
 resource "keycloak_openid_audience_protocol_mapper" "api" {
-  for_each = keycloak_openid_client.browser
+  for_each = var.api_client_enabled ? keycloak_openid_client.browser : {}
 
   realm_id  = keycloak_realm.application.id
   client_id = each.value.id
   name      = "${var.realm_name}-api-audience"
 
-  included_client_audience = keycloak_openid_client.api.client_id
+  included_client_audience = keycloak_openid_client.api[0].client_id
   add_to_access_token      = true
   add_to_id_token          = false
+}
+
+moved {
+  from = keycloak_openid_client.api
+  to   = keycloak_openid_client.api[0]
 }

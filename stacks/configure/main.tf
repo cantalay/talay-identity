@@ -13,11 +13,18 @@ module "keycloak_configuration" {
 module "vitafinder_identity" {
   source = "../../modules/application-identity"
 
-  keycloak_url   = var.keycloak_url
-  realm_name     = "vitafinder"
-  display_name   = "VitaFinder"
-  storefront_url = var.vitafinder_storefront_url
-  admin_url      = var.vitafinder_admin_url
+  keycloak_url = var.keycloak_url
+  realm_name   = "vitafinder"
+  display_name = "VitaFinder"
+  browser_clients = {
+    storefront = {
+      root_url = var.vitafinder_storefront_url
+    }
+    admin = {
+      root_url              = var.vitafinder_admin_url
+      access_token_lifespan = "3m"
+    }
+  }
   realm_roles = [
     "admin",
     "auditor",
