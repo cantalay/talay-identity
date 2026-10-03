@@ -14,3 +14,33 @@ kv/platform/keycloak:   username, password
 ```
 
 Chart tek-node profiline göre bir replica çalıştırır. Çok-node üretim topolojisinde Keycloak cache discovery, PostgreSQL HA ve en az üç replica ayrı kapasite çalışmasıyla etkinleştirilmelidir.
+
+## Yeni uygulama kimliği
+
+`modules/application-identity` her uygulama için bir realm üretir. Yeni proje `stacks/configure/main.tf` içine bir
+modül çağrısı olarak eklenir:
+
+```hcl
+module "example_identity" {
+  source = "../../modules/application-identity"
+
+  keycloak_url = var.keycloak_url
+  realm_name   = "example"
+  display_name = "Example"
+  browser_clients = {
+    web = { root_url = "https://example.cantalay.com" }                       # client id: example-web
+    mobile = {
+      root_url            = "https://example.cantalay.com"
+      extra_redirect_uris = ["example://auth/callback"]
+    }
+  }
+  api_client_enabled   = true            # example-api (bearer-only) + browser token audience
+  realm_roles          = ["user", "admin"]
+  default_role         = "user"
+  registration_allowed = true
+}
+```
+
+Browser client'ları public ve PKCE S256'dır; redirect `<root_url>/*` (+ `extra_redirect_uris`), web origin
+`<root_url>`. Uygulama API'leri issuer `https://auth.cantalay.com/realms/<realm>` ve audience `<realm>-api` ile
+JWT doğrular; roller `realm_access.roles` claim'indedir.

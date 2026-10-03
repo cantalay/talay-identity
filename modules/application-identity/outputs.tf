@@ -9,7 +9,7 @@ output "issuer" {
 output "clients" {
   value = merge(
     { for key, client in keycloak_openid_client.browser : key => client.client_id },
-    { api = keycloak_openid_client.api.client_id },
+    { for client in keycloak_openid_client.api : "api" => client.client_id },
   )
 }
 
