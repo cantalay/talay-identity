@@ -61,7 +61,7 @@ resource "helm_release" "keycloak" {
         scheme: HTTP
       initialDelaySeconds: 15
       timeoutSeconds: 5
-      failureThreshold: 180
+      failureThreshold: 360
       periodSeconds: 5
     EOT
     readinessProbe = <<-EOT
