@@ -48,6 +48,9 @@ module "hello_identity" {
     web = { root_url = var.hello_web_url }
   }
   realm_roles = ["user", "admin"]
+
+  gateway_client_enabled      = true
+  gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "hello", null)
 }
 
 moved {

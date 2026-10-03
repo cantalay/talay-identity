@@ -47,3 +47,29 @@ variable "registration_allowed" {
   type        = bool
   default     = true
 }
+
+variable "gateway_client_enabled" {
+  description = "auth-gateway üzerinden login için <realm>-gateway (direct grant) ve <realm>-gateway-admin (kullanıcı yönetimi) client'larını oluşturur."
+  type        = bool
+  default     = false
+}
+
+variable "gateway_redirect_uris" {
+  description = "Gateway social login (authorization code + kc_idp_hint) için izinli redirect URI'ları. Boşsa standard flow kapalıdır."
+  type        = list(string)
+  default     = []
+}
+
+variable "gateway_admin_client_secret" {
+  description = "<realm>-gateway-admin client secret'ı (write-only). Değer Vault'tan TF_VAR ile verilir; state'e yazılmaz."
+  type        = string
+  default     = null
+  sensitive   = true
+  ephemeral   = true
+}
+
+variable "gateway_admin_client_secret_version" {
+  description = "Secret'ı döndürmek için artırın."
+  type        = string
+  default     = "1"
+}
