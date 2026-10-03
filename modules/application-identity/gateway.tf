@@ -16,7 +16,7 @@ resource "keycloak_openid_client" "gateway" {
   service_accounts_enabled     = false
   valid_redirect_uris          = var.gateway_redirect_uris
   full_scope_allowed           = true
-  access_token_lifespan        = "5m"
+  access_token_lifespan        = "300"
 }
 
 resource "keycloak_openid_audience_protocol_mapper" "gateway_api" {
@@ -44,9 +44,11 @@ resource "keycloak_openid_client" "gateway_admin" {
   standard_flow_enabled        = false
   implicit_flow_enabled        = false
   direct_access_grants_enabled = false
-  full_scope_allowed           = false
-  client_secret_wo             = var.gateway_admin_client_secret
-  client_secret_wo_version     = var.gateway_admin_client_secret_version
+  # Service account yalnızca aşağıdaki realm-management rollerine sahip; full scope bu rollerin
+  # token'a girmesi için gerekli, ek yetki vermez.
+  full_scope_allowed       = true
+  client_secret_wo         = var.gateway_admin_client_secret
+  client_secret_wo_version = var.gateway_admin_client_secret_version
 }
 
 data "keycloak_openid_client" "realm_management" {

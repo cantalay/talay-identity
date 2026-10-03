@@ -16,9 +16,14 @@ variable "browser_clients" {
   type = map(object({
     root_url              = string
     name                  = optional(string)
-    access_token_lifespan = optional(string, "5m")
+    access_token_lifespan = optional(string, "300")
     extra_redirect_uris   = optional(list(string), [])
   }))
+
+  validation {
+    condition     = alltrue([for client in values(var.browser_clients) : can(regex("^[0-9]+$", client.access_token_lifespan))])
+    error_message = "access_token_lifespan saniye cinsinden tam sayı olmalı (ör. \"300\"); Keycloak \"5m\" gibi değerlerde token üretirken 500 döner."
+  }
 }
 
 variable "api_client_enabled" {
