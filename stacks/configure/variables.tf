@@ -48,12 +48,6 @@ variable "vitafinder_admin_url" {
   default     = "https://admin.vitafinder.cantalay.com"
 }
 
-variable "hello_web_url" {
-  description = "Public Talay Hello web URL."
-  type        = string
-  default     = "https://hello.cantalay.com"
-}
-
 variable "gateway_admin_client_secrets" {
   description = "Realm adına göre <realm>-gateway-admin secret'ları (write-only). Vault kv/apps/todogi/keycloak GATEWAY_REALMS_<REALM>_ADMINCLIENTSECRET değerlerinden TF_VAR ile verilir."
   type        = map(string)

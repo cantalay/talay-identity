@@ -17,11 +17,3 @@ output "vitafinder_identity" {
     roles   = module.vitafinder_identity.roles
   }
 }
-
-output "hello_identity" {
-  value = {
-    realm   = module.hello_identity.realm
-    clients = module.hello_identity.clients
-    roles   = module.hello_identity.roles
-  }
-}

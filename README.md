@@ -53,7 +53,7 @@ kullanmasını sağlar: `<realm>-gateway` (public, direct grant, API audience) v
 `kv/apps/todogi/keycloak` → `GATEWAY_REALMS_<REALM>_ADMINCLIENTSECRET` alanından her plan/apply'da verilir:
 
 ```bash
-export TF_VAR_gateway_admin_client_secrets="{\"hello\":\"$(vault kv get -mount=kv -field=GATEWAY_REALMS_HELLO_ADMINCLIENTSECRET apps/todogi/keycloak)\"}"
+export TF_VAR_gateway_admin_client_secrets="{\"vitafinder\":\"$(vault kv get -mount=kv -field=GATEWAY_REALMS_VITAFINDER_ADMINCLIENTSECRET apps/todogi/keycloak)\"}"
 ```
 
 Client `access_token_lifespan` değerleri **saniye** cinsindendir (`"300"`); `"5m"` gibi değerler Keycloak'ta token
