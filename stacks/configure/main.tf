@@ -40,21 +40,6 @@ module "vitafinder_identity" {
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "vitafinder", null)
 }
 
-module "hello_identity" {
-  source = "../../modules/application-identity"
-
-  keycloak_url = var.keycloak_url
-  realm_name   = "hello"
-  display_name = "Talay Hello"
-  browser_clients = {
-    web = { root_url = var.hello_web_url }
-  }
-  realm_roles = ["user", "admin"]
-
-  gateway_client_enabled      = true
-  gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "hello", null)
-}
-
 moved {
   from = data.keycloak_realm.platform
   to   = module.keycloak_configuration.data.keycloak_realm.platform
