@@ -36,6 +36,8 @@ module "vitafinder_identity" {
     "support",
     "user",
   ]
+  gateway_client_enabled      = true
+  gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "vitafinder", null)
 }
 
 module "hello_identity" {
