@@ -78,3 +78,9 @@ variable "gateway_admin_client_secret_version" {
   type        = string
   default     = "1"
 }
+
+variable "verify_email" {
+  description = "Yeni kullanıcılar e-postasını doğrulamadan giriş yapamaz. Açmadan önce realm SMTP'si (scripts/configure-realm-email.sh) kurulmalı."
+  type        = bool
+  default     = true
+}

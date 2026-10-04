@@ -38,6 +38,8 @@ module "vitafinder_identity" {
   ]
   gateway_client_enabled      = true
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "vitafinder", null)
+  # Realm SMTP'si ve cantalay.com gönderen domain'i doğrulandıktan sonra true yapılır.
+  verify_email = false
 }
 
 moved {

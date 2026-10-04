@@ -23,7 +23,7 @@ resource "keycloak_realm" "application" {
   edit_username_allowed          = false
   remember_me                    = true
   reset_password_allowed         = true
-  verify_email                   = false
+  verify_email                   = var.verify_email
 
   access_token_lifespan    = "5m"
   sso_session_idle_timeout = "30m"
@@ -48,6 +48,11 @@ resource "keycloak_realm" "application" {
       max_failure_wait_seconds         = 900
       failure_reset_time_seconds       = 43200
     }
+  }
+
+  # SMTP (parola içerir) Terraform dışında: scripts/configure-realm-email.sh Vault'tan uygular.
+  lifecycle {
+    ignore_changes = [smtp_server]
   }
 }
 
