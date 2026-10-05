@@ -12,7 +12,7 @@ set -euo pipefail
 
 export VAULT_ADDR="${VAULT_ADDR:-https://vault.cantalay.com}"
 KEYCLOAK_URL="${KEYCLOAK_URL:-https://auth.cantalay.com}"
-TALAY_HOST="${TALAY_HOST:-45.87.80.10}"
+TALAY_HOST="${TALAY_HOST:-152.53.66.101}"
 APPLY="${APPLY:-false}"
 realm="" from="" from_name="" verify="" mark_verified=false
 
