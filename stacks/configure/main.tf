@@ -79,3 +79,19 @@ moved {
   from = keycloak_openid_group_membership_protocol_mapper.vault_groups
   to   = module.keycloak_configuration.keycloak_openid_group_membership_protocol_mapper.vault_groups
 }
+
+# Finance Follower: kişisel kullanım; kayıt kapalı, kullanıcılar admin konsolundan açılır.
+# Giriş yalnız auth-gateway (/auth/financefollower/*) üzerinden; tarayıcı (PKCE) client'ı yok.
+module "financefollower_identity" {
+  source = "../../modules/application-identity"
+
+  keycloak_url                = var.keycloak_url
+  realm_name                  = "financefollower"
+  display_name                = "Finance Follower"
+  browser_clients             = {}
+  realm_roles                 = ["admin", "viewer"]
+  default_role                = "viewer"
+  registration_allowed        = false
+  gateway_client_enabled      = true
+  gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "financefollower", null)
+}
