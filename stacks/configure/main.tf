@@ -40,6 +40,21 @@ module "vitafinder_identity" {
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "vitafinder", null)
 }
 
+module "financefollower_identity" {
+  source = "../../modules/application-identity"
+
+  keycloak_url         = var.keycloak_url
+  realm_name           = "financefollower"
+  display_name         = "Finance Follower"
+  browser_clients      = {}
+  realm_roles          = ["viewer", "admin"]
+  default_role         = "viewer"
+  registration_allowed = false
+
+  gateway_client_enabled      = true
+  gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "financefollower", null)
+}
+
 moved {
   from = data.keycloak_realm.platform
   to   = module.keycloak_configuration.data.keycloak_realm.platform

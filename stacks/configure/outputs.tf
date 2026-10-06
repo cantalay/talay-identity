@@ -17,3 +17,11 @@ output "vitafinder_identity" {
     roles   = module.vitafinder_identity.roles
   }
 }
+
+output "financefollower_identity" {
+  value = {
+    realm   = module.financefollower_identity.realm
+    clients = module.financefollower_identity.clients
+    roles   = module.financefollower_identity.roles
+  }
+}

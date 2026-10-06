@@ -4,7 +4,7 @@
 
 Admin bootstrap ve veritabanı parolaları Vault'tan External Secrets Operator ile gelir; Terraform state'ine girmez. Configure stack provider kimlik bilgilerini `KEYCLOAK_USER` ve `KEYCLOAK_PASSWORD` ortam değişkenlerinden okur.
 
-`modules/application-identity`, uygulamaya ait realm, public PKCE istemcileri, bearer-only API audience ve realm rollerini kod olarak yönetir. VitaFinder için `vitafinder` realm'i; `vitafinder-storefront`, `vitafinder-admin` ve `vitafinder-api` istemcileri configure stack tarafından oluşturulur. Yeni kayıt olan kullanıcılara yalnızca `user` rolü otomatik atanır; yönetim rolleri Keycloak'ta yetkili operatör tarafından atanır.
+`modules/application-identity`, uygulamaya ait realm, public PKCE istemcileri, bearer-only API audience ve realm rollerini kod olarak yönetir. VitaFinder için `vitafinder` realm'i; `vitafinder-storefront`, `vitafinder-admin` ve `vitafinder-api` istemcileri configure stack tarafından oluşturulur. Yeni kayıt olan kullanıcılara yalnızca `user` rolü otomatik atanır; yönetim rolleri Keycloak'ta yetkili operatör tarafından atanır. Finance Follower için `financefollower` realm'i self-registration kapalı olarak; yalnızca `financefollower-api`, `financefollower-gateway` ve `financefollower-gateway-admin` istemcileriyle oluşturulur. Varsayılan rol `viewer`dır; `admin` rolü elle atanır.
 
 Vault alanları:
 
