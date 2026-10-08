@@ -78,3 +78,15 @@ variable "gateway_admin_client_secret_version" {
   type        = string
   default     = "1"
 }
+
+variable "sso_session_idle_timeout" {
+  description = "Bu süre boyunca hiç token yenilenmezse oturum düşer (kayan pencere). Uygulama admin panelleri kendi 1 saatlik hareketsizlik sınırını ayrıca uygular."
+  type        = string
+  default     = "168h"
+}
+
+variable "sso_session_max_lifespan" {
+  description = "Düzenli kullanımda bile oturumun en fazla yaşayacağı süre; sonrası yeniden giriş."
+  type        = string
+  default     = "2160h"
+}
