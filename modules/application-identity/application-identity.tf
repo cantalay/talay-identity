@@ -26,8 +26,9 @@ resource "keycloak_realm" "application" {
   verify_email                   = false
 
   access_token_lifespan    = "5m"
-  sso_session_idle_timeout = "30m"
-  sso_session_max_lifespan = "10h"
+  # Kayan oturum: her token yenilemede (düzenli kullanımda) hareketsizlik sayacı sıfırlanır.
+  sso_session_idle_timeout = var.sso_session_idle_timeout
+  sso_session_max_lifespan = var.sso_session_max_lifespan
   revoke_refresh_token     = true
   refresh_token_max_reuse  = 0
 
