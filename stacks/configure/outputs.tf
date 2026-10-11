@@ -25,3 +25,11 @@ output "financefollower_identity" {
     roles   = module.financefollower_identity.roles
   }
 }
+
+output "conquest_identity" {
+  value = {
+    realm   = module.conquest_identity.realm
+    clients = module.conquest_identity.clients
+    roles   = module.conquest_identity.roles
+  }
+}
