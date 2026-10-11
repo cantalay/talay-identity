@@ -95,3 +95,21 @@ module "financefollower_identity" {
   gateway_client_enabled      = true
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "financefollower", null)
 }
+
+# Colony Conquest (mobil oyun): kayıt açık (oyun içi form + misafir hesabı), giriş yalnız auth-gateway
+# (/auth/conquest/*); tarayıcı client'ı yok. Hesap silme API'si conquest-gateway-admin servis hesabını kullanır.
+# Mobilde oturum 30 gün hareketsizlikte düşer (90 gün üst sınır).
+module "conquest_identity" {
+  source = "../../modules/application-identity"
+
+  keycloak_url                = var.keycloak_url
+  realm_name                  = "conquest"
+  display_name                = "Colony Conquest"
+  browser_clients             = {}
+  realm_roles                 = ["admin", "user"]
+  default_role                = "user"
+  registration_allowed        = true
+  gateway_client_enabled      = true
+  gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "conquest", null)
+  sso_session_idle_timeout    = "720h"
+}
