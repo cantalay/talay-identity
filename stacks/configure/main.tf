@@ -113,3 +113,20 @@ module "conquest_identity" {
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "conquest", null)
   sso_session_idle_timeout    = "720h"
 }
+
+# Notify (merkezi bildirim servisi) yönetim paneli: kayıt kapalı, kullanıcılar admin konsolundan açılır.
+# Roller: viewer okur, operator gönderir ve cihaz/mesaj işlemleri yapar, admin yapılandırır.
+# Giriş yalnız auth-gateway (/auth/notify/*) üzerinden; tarayıcı (PKCE) client'ı yok.
+module "notify_identity" {
+  source = "../../modules/application-identity"
+
+  keycloak_url                = var.keycloak_url
+  realm_name                  = "notify"
+  display_name                = "Notify"
+  browser_clients             = {}
+  realm_roles                 = ["admin", "operator", "viewer"]
+  default_role                = "viewer"
+  registration_allowed        = false
+  gateway_client_enabled      = true
+  gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "notify", null)
+}

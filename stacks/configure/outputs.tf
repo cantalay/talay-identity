@@ -33,3 +33,11 @@ output "conquest_identity" {
     roles   = module.conquest_identity.roles
   }
 }
+
+output "notify_identity" {
+  value = {
+    realm   = module.notify_identity.realm
+    clients = module.notify_identity.clients
+    roles   = module.notify_identity.roles
+  }
+}
