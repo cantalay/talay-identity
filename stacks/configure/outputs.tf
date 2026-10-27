@@ -41,3 +41,11 @@ output "notify_identity" {
     roles   = module.notify_identity.roles
   }
 }
+
+output "tela_identity" {
+  value = {
+    realm   = module.tela_identity.realm
+    clients = module.tela_identity.clients
+    roles   = module.tela_identity.roles
+  }
+}

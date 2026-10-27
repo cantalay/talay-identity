@@ -130,3 +130,24 @@ module "notify_identity" {
   gateway_client_enabled      = true
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "notify", null)
 }
+
+# Tela (IPTV & Social TV & Creator platformu, kod adı; tela-core/talay.yaml): kayıt açık (web/mobil kendi formu), giriş
+# yalnız auth-gateway (/auth/tela/*); tarayıcı (PKCE) client'ı yok. İzinler tela-api'de rollere göre (Permissions.java);
+# yönetim rolleri Keycloak admin konsolundan atanır. TV'ler kendi cihaz jetonunu kullanır (ADR-T004), Keycloak oturumu değil.
+# Mobil oturum 30 gün hareketsizlikte düşer (90 gün üst sınır). Sosyal giriş dönüşü: tela://callback.
+module "tela_identity" {
+  source = "../../modules/application-identity"
+
+  keycloak_url    = var.keycloak_url
+  realm_name      = "tela"
+  display_name    = "Tela"
+  browser_clients = {}
+  realm_roles = ["user", "admin", "policy-editor", "policy-approver", "legal-officer", "incident-commander", "support",
+  "auditor", "catalog-editor"]
+  default_role                = "user"
+  registration_allowed        = true
+  gateway_client_enabled      = true
+  gateway_redirect_uris       = ["tela://callback"]
+  gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "tela", null)
+  sso_session_idle_timeout    = "720h"
+}
