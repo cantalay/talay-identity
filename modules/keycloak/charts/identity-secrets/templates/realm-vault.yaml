@@ -1,0 +1,19 @@
+{{- if .Values.realmVault.remoteKey }}
+# Keycloak dosya kasası (KC_VAULT=file): realm yapılandırmalarındaki ${vault.<anahtar>} referansları bu Secret'ın dosyalarından
+# okunur. Vault'taki her alan "<realm>_<anahtar>" adıyla yazılır (ör. conquest_playgamesclientsecret); sır Terraform durumuna düşmez.
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: keycloak-realm-vault
+spec:
+  refreshInterval: {{ .Values.refreshInterval | quote }}
+  secretStoreRef:
+    name: {{ .Values.secretStore.name | quote }}
+    kind: {{ .Values.secretStore.kind | quote }}
+  target:
+    name: keycloak-realm-vault
+    creationPolicy: Owner
+  dataFrom:
+    - extract:
+        key: {{ .Values.realmVault.remoteKey | quote }}
+{{- end }}

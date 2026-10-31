@@ -6,3 +6,5 @@ postgresql:
   remoteKey: platform/postgresql
 keycloak:
   remoteKey: platform/keycloak
+realmVault:
+  remoteKey: ""

@@ -98,7 +98,8 @@ module "financefollower_identity" {
 
 # Colony Conquest (mobil oyun): kayıt açık (oyun içi form + misafir hesabı), giriş yalnız auth-gateway
 # (/auth/conquest/*); tarayıcı client'ı yok. Hesap silme API'si conquest-gateway-admin servis hesabını kullanır.
-# Mobilde oturum 30 gün hareketsizlikte düşer (90 gün üst sınır).
+# Mobil oturum offline token'dır (auth-gateway GATEWAY_REALMS_CONQUEST_OFFLINEACCESS): kullanıldıkça düşmez, 30 gün
+# hareketsizlikte düşer (Keycloak offline oturum varsayılanı); SSO üst sınırı (90 gün) uygulanmaz.
 module "conquest_identity" {
   source = "../../modules/application-identity"
 
@@ -112,6 +113,15 @@ module "conquest_identity" {
   gateway_client_enabled      = true
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "conquest", null)
   sso_session_idle_timeout    = "720h"
+  offline_access_enabled      = true
+
+  # Game Center ile giriş (conquorer docs/62 §12; talay-keycloak-providers). Kullanıcılar misafir hesapları gibi sentetik
+  # e-postalı. Play Games, Play Console Games projesi ve OAuth web istemcisi hazır olunca (sır Vault'ta, kasa referansıyla) açılır.
+  platform_identity = {
+    game_center_bundle_ids = ["com.cantalay.colonyconquest"]
+    email_domain           = "platform.conquest.invalid"
+    last_name              = "Conquest"
+  }
 }
 
 # Notify (merkezi bildirim servisi) yönetim paneli: kayıt kapalı, kullanıcılar admin konsolundan açılır.

@@ -11,7 +11,34 @@ resource "helm_release" "identity_secrets" {
     refreshInterval = "1h"
     postgresql      = { remoteKey = var.vault_postgresql_key }
     keycloak        = { remoteKey = var.vault_keycloak_key }
+    realmVault      = { remoteKey = var.vault_realm_secrets_key }
   })]
+}
+
+locals {
+  # Eklentiler (talay-keycloak-providers): init container JAR'ı providers birimine kopyalar; kc.sh start açılışta derler.
+  providers_enabled = var.providers_image != ""
+  realm_vault       = var.vault_realm_secrets_key != ""
+  extra_init_containers = local.providers_enabled ? [{
+    name            = "providers"
+    image           = var.providers_image
+    imagePullPolicy = "IfNotPresent"
+    volumeMounts    = [{ name = "providers", mountPath = "/target" }]
+    securityContext = { allowPrivilegeEscalation = false, readOnlyRootFilesystem = true, runAsNonRoot = true, capabilities = { drop = ["ALL"] } }
+    resources       = { requests = { cpu = "10m", memory = "16Mi" }, limits = { memory = "32Mi" } }
+  }] : []
+  extra_volumes = concat(
+    local.providers_enabled ? [{ name = "providers", emptyDir = {} }] : [],
+    local.realm_vault ? [{ name = "realm-vault", secret = { secretName = "keycloak-realm-vault", optional = true } }] : [],
+  )
+  extra_volume_mounts = concat(
+    local.providers_enabled ? [{ name = "providers", mountPath = "/opt/keycloak/providers" }] : [],
+    local.realm_vault ? [{ name = "realm-vault", mountPath = "/opt/keycloak/vault", readOnly = true }] : [],
+  )
+  vault_env = local.realm_vault ? [
+    { name = "KC_VAULT", value = "file" },
+    { name = "KC_VAULT_DIR", value = "/opt/keycloak/vault" },
+  ] : []
 }
 
 resource "helm_release" "keycloak" {
@@ -40,12 +67,15 @@ resource "helm_release" "keycloak" {
       existingSecretKey = "password"
     }
     extraEnvFrom = yamlencode([{ secretRef = { name = "keycloak-bootstrap" } }])
-    extraEnv = yamlencode([
+    extraEnv = yamlencode(concat([
       { name = "KC_HOSTNAME", value = var.keycloak_domain },
       { name = "KC_HOSTNAME_STRICT", value = "true" },
       { name = "KC_PROXY_HEADERS", value = "xforwarded" },
       { name = "KC_LOG_CONSOLE_OUTPUT", value = "json" },
-    ])
+    ], local.vault_env))
+    extraInitContainers = length(local.extra_init_containers) > 0 ? yamlencode(local.extra_init_containers) : ""
+    extraVolumes        = length(local.extra_volumes) > 0 ? yamlencode(local.extra_volumes) : ""
+    extraVolumeMounts   = length(local.extra_volume_mounts) > 0 ? yamlencode(local.extra_volume_mounts) : ""
     proxy = {
       enabled = true
       mode    = "forwarded"
