@@ -85,6 +85,12 @@ variable "sso_session_idle_timeout" {
   default     = "168h"
 }
 
+variable "offline_access_enabled" {
+  description = "Kullanıcılara offline_access rolü verilir (varsayılan roller). auth-gateway'de GATEWAY_REALMS_<REALM>_OFFLINEACCESS=true ile birlikte: mobil oturum kullanıldıkça düşmez (offline oturum hareketsizliği; SSO üst sınırı uygulanmaz)."
+  type        = bool
+  default     = false
+}
+
 variable "sso_session_max_lifespan" {
   description = "Düzenli kullanımda bile oturumun en fazla yaşayacağı süre; sonrası yeniden giriş."
   type        = string

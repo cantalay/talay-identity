@@ -61,8 +61,9 @@ resource "keycloak_role" "realm" {
 }
 
 resource "keycloak_default_roles" "application" {
-  realm_id      = keycloak_realm.application.id
-  default_roles = [keycloak_role.realm[var.default_role].name]
+  realm_id = keycloak_realm.application.id
+  # offline_access Keycloak'ın yerleşik rolüdür; açılırsa mobil oturum (auth-gateway OFFLINEACCESS) offline token alır.
+  default_roles = concat([keycloak_role.realm[var.default_role].name], var.offline_access_enabled ? ["offline_access"] : [])
 }
 
 resource "keycloak_openid_client" "browser" {
