@@ -118,7 +118,7 @@ module "conquest_identity" {
   # Game Center ile giriş (conquorer docs/62 §12; talay-keycloak-providers). Kullanıcılar misafir hesapları gibi sentetik
   # e-postalı. Play Games, Play Console Games projesi ve OAuth web istemcisi hazır olunca (sır Vault'ta, kasa referansıyla) açılır.
   platform_identity = {
-    game_center_bundle_ids = ["com.cantalay.colonyconquest"]
+    game_center_bundle_ids = ["com.cantalay.colony"]   # iOS paket kimliği; Android com.cantalay.colonyconquest kalır
     email_domain           = "platform.conquest.invalid"
     last_name              = "Conquest"
   }
