@@ -32,10 +32,11 @@ resource "keycloak_authentication_execution_config" "platform" {
   execution_id = keycloak_authentication_execution.platform[0].id
   # Hesap bağlama ucu yapılandırmayı bu adla arar.
   alias = "platform-identity"
+  # coalesce(null, "") hata verir (boş dizgeyi de geçersiz sayar); Play Games kapalıyken alanlar boş kalır ve süzülür.
   config = { for k, v in {
     gameCenterBundleIds   = join(",", var.platform_identity.game_center_bundle_ids)
-    playGamesClientId     = coalesce(var.platform_identity.play_games_client_id, "")
-    playGamesClientSecret = coalesce(var.platform_identity.play_games_client_secret_ref, "")
+    playGamesClientId     = var.platform_identity.play_games_client_id == null ? "" : var.platform_identity.play_games_client_id
+    playGamesClientSecret = var.platform_identity.play_games_client_secret_ref == null ? "" : var.platform_identity.play_games_client_secret_ref
     emailDomain           = var.platform_identity.email_domain
     lastName              = var.platform_identity.last_name
     createUsers           = "true"
