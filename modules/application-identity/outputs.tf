@@ -12,6 +12,7 @@ output "clients" {
     { for client in keycloak_openid_client.api : "api" => client.client_id },
     { for client in keycloak_openid_client.gateway : "gateway" => client.client_id },
     { for client in keycloak_openid_client.gateway_admin : "gateway_admin" => client.client_id },
+    { for client in keycloak_openid_client.platform : "platform" => client.client_id },
   )
 }
 

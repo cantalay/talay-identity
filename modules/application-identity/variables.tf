@@ -96,3 +96,19 @@ variable "sso_session_max_lifespan" {
   type        = string
   default     = "2160h"
 }
+
+variable "platform_identity" {
+  description = <<-EOT
+    Game Center / Play Games ile giriş (talay-keycloak-providers platform-identity eklentisi Keycloak'ta yüklü olmalı). null: kapalı.
+    game_center_bundle_ids boşsa Game Center, play_games_client_id boşsa Play Games kapalıdır. play_games_client_secret_ref sırrın
+    kendisi değil Keycloak kasası referansıdır ("$${vault.playgamesclientsecret}"; Vault'ta <realm>_playgamesclientsecret).
+  EOT
+  type = object({
+    game_center_bundle_ids       = optional(list(string), [])
+    play_games_client_id         = optional(string)
+    play_games_client_secret_ref = optional(string)
+    email_domain                 = optional(string, "platform.invalid")
+    last_name                    = optional(string, "Player")
+  })
+  default = null
+}

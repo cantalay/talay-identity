@@ -7,6 +7,9 @@ module "keycloak" {
   postgres_username    = var.postgres_username
   vault_postgresql_key = var.vault_postgresql_key
   vault_keycloak_key   = var.vault_keycloak_key
+
+  providers_image         = var.providers_image
+  vault_realm_secrets_key = var.vault_realm_secrets_key
 }
 
 moved {

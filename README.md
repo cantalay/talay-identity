@@ -45,6 +45,26 @@ Browser client'ları public ve PKCE S256'dır; redirect `<root_url>/*` (+ `extra
 `<root_url>`. Uygulama API'leri issuer `https://auth.cantalay.com/realms/<realm>` ve audience `<realm>-api` ile
 JWT doğrular; roller `realm_access.roles` claim'indedir.
 
+### Keycloak eklentileri ve platform girişi
+
+- **Eklentiler.** `stacks/install` → `providers_image`. Kaynak:
+  [talay-keycloak-providers](https://github.com/cantalay/talay-keycloak-providers).
+  - İmaj init container olarak JAR'ı `/opt/keycloak/providers` birimine kopyalar. `kc.sh start` açılışta derler, bu da açılışa
+    yaklaşık 30 sn ekler.
+  - İmaj değişince Keycloak pod'u yeniden başlar; kısa bir giriş kesintisi olur, dağıtılmış JWT'ler geçerli kalır.
+- **Keycloak dosya kasası.** `stacks/install` → `vault_realm_secrets_key` (Vault yolu).
+  - Realm yapılandırmalarındaki `${vault.<anahtar>}` referansları bu yolun `<realm>_<anahtar>` alanlarından okunur
+    (ExternalSecret `keycloak-realm-vault`).
+  - Sır Terraform durumuna girmez.
+- **Platform girişi** (`platform_identity`, modül değişkeni): Game Center / Play Games ile parolasız giriş.
+  - Oluşanlar:
+    - `platform-direct-grant` akışı;
+    - `platform-identity` authenticator yapılandırması;
+    - `<realm>-platform` istemcisi (public, yalnız bu direct grant).
+  - auth-gateway `/auth/<realm>/platform` bu istemciyi kullanır. Kimlik kullanıcı özniteliğindedir; bağlama ucu
+    `/realms/<realm>/platform-identity/link`.
+  - Önce `stacks/install` (eklenti yüklü olmalı), sonra `stacks/configure` uygulanır.
+
 ### auth-gateway client'ları
 
 `gateway_client_enabled = true` uygulamanın kendi login ekranını auth-gateway (`/auth/<realm>/*`) üzerinden
