@@ -33,7 +33,8 @@ locals {
   )
   extra_volume_mounts = concat(
     local.providers_enabled ? [{ name = "providers", mountPath = "/opt/keycloak/providers" }] : [],
-    local.realm_vault ? [{ name = "realm-vault", mountPath = "/opt/keycloak/vault", readOnly = true }] : [],
+    # Secret birimleri zaten salt okunur; chart readOnly alanini metin ("true") olarak veriyor ve StatefulSet yamasi reddediliyordu (2026-11-16)
+    local.realm_vault ? [{ name = "realm-vault", mountPath = "/opt/keycloak/vault" }] : [],
   )
   vault_env = local.realm_vault ? [
     { name = "KC_VAULT", value = "file" },
