@@ -38,6 +38,9 @@ module "vitafinder_identity" {
   ]
   gateway_client_enabled      = true
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "vitafinder", null)
+  # Google / Apple ile giriş: web vitrin geri dönüşü ve mobil uygulama şeması (apps/mobile app.config.ts scheme)
+  gateway_redirect_uris = ["${var.vitafinder_storefront_url}/giris/geri", "vitapick://auth"]
+  social_login          = var.vitafinder_social_login
 }
 
 moved {
@@ -118,7 +121,7 @@ module "conquest_identity" {
   # Game Center ile giriş (conquorer docs/62 §12; talay-keycloak-providers). Kullanıcılar misafir hesapları gibi sentetik
   # e-postalı. Play Games, Play Console Games projesi ve OAuth web istemcisi hazır olunca (sır Vault'ta, kasa referansıyla) açılır.
   platform_identity = {
-    game_center_bundle_ids = ["com.cantalay.colony"]   # iOS paket kimliği; Android com.cantalay.colonyconquest kalır
+    game_center_bundle_ids = ["com.cantalay.colony"] # iOS paket kimliği; Android com.cantalay.colonyconquest kalır
     email_domain           = "platform.conquest.invalid"
     last_name              = "Conquest"
   }
