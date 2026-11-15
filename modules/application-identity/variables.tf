@@ -112,3 +112,25 @@ variable "platform_identity" {
   })
   default = null
 }
+
+variable "social_login" {
+  description = <<-EOT
+    Google / Apple ile giriş (Keycloak kimlik aracılığı). İstemci kc_idp_hint ile Keycloak'ın yetkilendirme ucuna gider,
+    dönen kodu auth-gateway /auth/<realm>/social değiştirir; gateway_redirect_uris dolu olmalı. Sırlar Keycloak kasası
+    referansıdır ("$${vault.<anahtar>}"; Vault'ta <realm>_<anahtar>): Google client secret ve Apple .p8 anahtar içeriği
+    (Apple eklentisi talay-keycloak-providers imajında; client_id = Services ID). null: kapalı.
+  EOT
+  type = object({
+    google = optional(object({
+      client_id         = string
+      client_secret_ref = string
+    }))
+    apple = optional(object({
+      client_id = string
+      team_id   = string
+      key_id    = string
+      p8_ref    = string
+    }))
+  })
+  default = null
+}

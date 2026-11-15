@@ -39,13 +39,13 @@ variable "vault_oidc_client_secret_version" {
 variable "vitafinder_storefront_url" {
   description = "Public VitaFinder storefront URL."
   type        = string
-  default     = "https://vitafinder.cantalay.com"
+  default     = "https://vita-pick.com"
 }
 
 variable "vitafinder_admin_url" {
   description = "Public VitaFinder admin URL."
   type        = string
-  default     = "https://admin.vitafinder.cantalay.com"
+  default     = "https://admin.vita-pick.com"
 }
 
 variable "gateway_admin_client_secrets" {
@@ -54,4 +54,21 @@ variable "gateway_admin_client_secrets" {
   default     = {}
   sensitive   = true
   ephemeral   = true
+}
+
+variable "vitafinder_social_login" {
+  description = "VitaPick Google / Apple ile giriş (modül social_login). Sırlar Keycloak kasası referansıdır; kimlikler gizli değildir. null: kapalı."
+  type = object({
+    google = optional(object({
+      client_id         = string
+      client_secret_ref = string
+    }))
+    apple = optional(object({
+      client_id = string
+      team_id   = string
+      key_id    = string
+      p8_ref    = string
+    }))
+  })
+  default = null
 }
