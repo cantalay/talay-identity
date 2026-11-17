@@ -70,5 +70,12 @@ variable "vitafinder_social_login" {
       p8_ref    = string
     }))
   })
-  default = null
+  # Kimlikler gizli değil; sırlar Keycloak dosya kasasında (Vault kv/platform/keycloak-realm-vault, alan vitafinder_<anahtar>;
+  # referans realm önekisiz: $${vault.<anahtar>}). Varsayılan depoda durur ki değişkensiz bir apply sağlayıcıyı silmesin.
+  default = {
+    google = {
+      client_id         = "469478267904-j9g23jonbbcshuqua161722m2eqhq3oa.apps.googleusercontent.com"
+      client_secret_ref = "$${vault.googleclientsecret}"
+    }
+  }
 }
