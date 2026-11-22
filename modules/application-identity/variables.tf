@@ -59,6 +59,18 @@ variable "gateway_client_enabled" {
   default     = false
 }
 
+variable "gateway_client_id" {
+  description = "Gateway (direct grant) client id; null → <realm>-gateway. Yalnız elle kurulmuş, Terraform'a import edilen eski realm'ler için (todogi: auth)."
+  type        = string
+  default     = null
+}
+
+variable "gateway_admin_client_id" {
+  description = "Gateway admin (service account) client id; null → <realm>-gateway-admin. Import edilen eski realm'ler için (todogi: auth-gateway-admin)."
+  type        = string
+  default     = null
+}
+
 variable "gateway_redirect_uris" {
   description = "Gateway social login (authorization code + kc_idp_hint) için izinli redirect URI'ları. Boşsa standard flow kapalıdır."
   type        = list(string)

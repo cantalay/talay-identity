@@ -5,7 +5,7 @@ resource "keycloak_openid_client" "gateway" {
   count = var.gateway_client_enabled ? 1 : 0
 
   realm_id  = keycloak_realm.application.id
-  client_id = "${var.realm_name}-gateway"
+  client_id = coalesce(var.gateway_client_id, "${var.realm_name}-gateway")
   name      = "${var.display_name} Gateway"
   enabled   = true
 
@@ -35,7 +35,7 @@ resource "keycloak_openid_client" "gateway_admin" {
   count = var.gateway_client_enabled ? 1 : 0
 
   realm_id  = keycloak_realm.application.id
-  client_id = "${var.realm_name}-gateway-admin"
+  client_id = coalesce(var.gateway_admin_client_id, "${var.realm_name}-gateway-admin")
   name      = "${var.display_name} Gateway Admin"
   enabled   = true
 
@@ -44,6 +44,9 @@ resource "keycloak_openid_client" "gateway_admin" {
   standard_flow_enabled        = false
   implicit_flow_enabled        = false
   direct_access_grants_enabled = false
+  # Tarayıcı akışı yok; import edilen elle kurulmuş istemcilerdeki "/*" değerleri de temizlenir.
+  valid_redirect_uris = []
+  web_origins         = []
   # Service account yalnızca aşağıdaki realm-management rollerine sahip; full scope bu rollerin
   # token'a girmesi için gerekli, ek yetki vermez.
   full_scope_allowed       = true

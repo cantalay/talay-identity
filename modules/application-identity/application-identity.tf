@@ -50,6 +50,12 @@ resource "keycloak_realm" "application" {
       failure_reset_time_seconds       = 43200
     }
   }
+
+  # SMTP (parola içerir) Terraform dışında yönetilir (realm e-posta betiği / İP-04); import edilen realm'deki elle
+  # girilmiş ayar plan'da silinmesin.
+  lifecycle {
+    ignore_changes = [smtp_server]
+  }
 }
 
 resource "keycloak_role" "realm" {
