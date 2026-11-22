@@ -5,7 +5,7 @@ resource "keycloak_openid_client" "gateway" {
   count = var.gateway_client_enabled ? 1 : 0
 
   realm_id  = keycloak_realm.application.id
-  client_id = "${var.realm_name}-gateway"
+  client_id = coalesce(var.gateway_client_id, "${var.realm_name}-gateway")
   name      = "${var.display_name} Gateway"
   enabled   = true
 
@@ -35,7 +35,7 @@ resource "keycloak_openid_client" "gateway_admin" {
   count = var.gateway_client_enabled ? 1 : 0
 
   realm_id  = keycloak_realm.application.id
-  client_id = "${var.realm_name}-gateway-admin"
+  client_id = coalesce(var.gateway_admin_client_id, "${var.realm_name}-gateway-admin")
   name      = "${var.display_name} Gateway Admin"
   enabled   = true
 

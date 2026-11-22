@@ -48,6 +48,12 @@ variable "vitafinder_admin_url" {
   default     = "https://admin.vita-pick.com"
 }
 
+variable "todogi_web_url" {
+  description = "ToDoGi web adresi (gateway dönüşü /giris/geri ve PKCE yedek istemcisi)."
+  type        = string
+  default     = "https://todogi.net"
+}
+
 variable "gateway_admin_client_secrets" {
   description = "Realm adına göre <realm>-gateway-admin secret'ları (write-only). Vault kv/apps/todogi/keycloak GATEWAY_REALMS_<REALM>_ADMINCLIENTSECRET değerlerinden TF_VAR ile verilir."
   type        = map(string)

@@ -164,3 +164,52 @@ module "tela_identity" {
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "tela", null)
   sso_session_idle_timeout    = "720h"
 }
+
+# ToDoGi (görev + liste + ev bütçesi; todogi-be/talay.yaml): kayıt açık (uygulamanın kendi formu), giriş auth-gateway
+# üzerinden. Realm elle kurulmuştu (gateway'in varsayılan realm'i: /auth/* ve /auth/todogi/*); D19 gereği eski kullanıcılar
+# korunmaz ama realm yeniden oluşturulmaz, import edilir. İstemciler mevcut adlarıyla kalır: gateway varsayılan realm ayarı
+# KEYCLOAK_CLIENT_ID=auth ve yönetim istemcisi auth-gateway-admin bu adlara bağlı. Mobil oturum offline token
+# (GATEWAY_REALMS_TODOGI_OFFLINEACCESS, İP-04). Google/Apple ve realm SMTP'si İP-04'te.
+module "todogi_identity" {
+  source = "../../modules/application-identity"
+
+  keycloak_url = var.keycloak_url
+  realm_name   = "todogi"
+  display_name = "ToDoGi"
+  browser_clients = {
+    web = {
+      root_url = var.todogi_web_url
+    }
+  }
+  realm_roles                 = ["user"]
+  default_role                = "user"
+  registration_allowed        = true
+  gateway_client_enabled      = true
+  gateway_client_id           = "auth"
+  gateway_admin_client_id     = "auth-gateway-admin"
+  gateway_redirect_uris       = ["${var.todogi_web_url}/giris/geri", "todogi://auth"]
+  gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "todogi", null)
+  sso_session_idle_timeout    = "720h"
+  offline_access_enabled      = true
+}
+
+# Elle kurulmuş realm ve istemcileri (2026-11-22 admin API'den okunan kimlikler). Apply sonrası kaldırılabilir.
+import {
+  to = module.todogi_identity.keycloak_realm.application
+  id = "todogi"
+}
+
+import {
+  to = module.todogi_identity.keycloak_openid_client.gateway[0]
+  id = "todogi/c0da0ed7-c720-417a-bab7-508b9a86bda9"
+}
+
+import {
+  to = module.todogi_identity.keycloak_openid_client.gateway_admin[0]
+  id = "todogi/4beb54a7-dcaf-40fc-abfa-af8c49b6886c"
+}
+
+import {
+  to = module.todogi_identity.keycloak_default_roles.application
+  id = "todogi/9ec75fb6-4fc6-4ca3-a03d-8e415a745917"
+}
