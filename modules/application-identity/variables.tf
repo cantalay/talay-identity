@@ -146,3 +146,9 @@ variable "social_login" {
   })
   default = null
 }
+
+variable "verify_email" {
+  description = "Keycloak'ın kendi e-posta doğrulama zorunluluğu: true iken doğrulanmamış kullanıcı giriş yapamaz ve Keycloak doğrulama e-postası (Keycloak sayfası) ister; realm SMTP'si (scripts/configure-realm-email.sh) gerekir. Gateway doğrulaması (auth-gateway GATEWAY_MAIL_REALMS_<REALM>_VERIFYURL) kullanan realm'lerde false kalır."
+  type        = bool
+  default     = false
+}

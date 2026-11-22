@@ -85,3 +85,26 @@ variable "vitafinder_social_login" {
     }
   }
 }
+
+variable "todogi_social_login" {
+  description = "ToDoGi Google / Apple ile giriş (modül social_login; VitaPick deseni). Sırlar Keycloak kasası referansıdır; kimlikler gizli değildir. null: kapalı."
+  type = object({
+    google = optional(object({
+      client_id         = string
+      client_secret_ref = string
+    }))
+    apple = optional(object({
+      client_id = string
+      team_id   = string
+      key_id    = string
+      p8_ref    = string
+    }))
+  })
+  # Kimlikler (Google Cloud "todogi" projesi OAuth web istemcisi; Apple Services ID, Team ID, Key ID) gelince buraya yazılır,
+  # sırlar Keycloak dosya kasasına (Vault kv/platform/keycloak-realm-vault, alanlar todogi_googleclientsecret ve todogi_applep8;
+  # referans realm öneksiz: $${vault.googleclientsecret}, $${vault.applep8}). Varsayılan depoda durur ki değişkensiz bir apply sağlayıcıları
+  # silmesin. Örnek:
+  #   google = { client_id = "<id>.apps.googleusercontent.com", client_secret_ref = "$${vault.googleclientsecret}" }
+  #   apple  = { client_id = "com.cantalay.todogi.signin", team_id = "<TEAMID>", key_id = "<KEYID>", p8_ref = "$${vault.applep8}" }
+  default = null
+}

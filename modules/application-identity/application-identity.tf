@@ -23,7 +23,7 @@ resource "keycloak_realm" "application" {
   edit_username_allowed          = false
   remember_me                    = true
   reset_password_allowed         = true
-  verify_email                   = false
+  verify_email                   = var.verify_email
 
   access_token_lifespan = "5m"
   # Kayan oturum: her token yenilemede (düzenli kullanımda) hareketsizlik sayacı sıfırlanır.
