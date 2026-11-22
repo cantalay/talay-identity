@@ -44,6 +44,9 @@ resource "keycloak_openid_client" "gateway_admin" {
   standard_flow_enabled        = false
   implicit_flow_enabled        = false
   direct_access_grants_enabled = false
+  # Tarayıcı akışı yok; import edilen elle kurulmuş istemcilerdeki "/*" değerleri de temizlenir.
+  valid_redirect_uris = []
+  web_origins         = []
   # Service account yalnızca aşağıdaki realm-management rollerine sahip; full scope bu rollerin
   # token'a girmesi için gerekli, ek yetki vermez.
   full_scope_allowed       = true
