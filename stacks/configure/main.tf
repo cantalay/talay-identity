@@ -168,8 +168,10 @@ module "tela_identity" {
 # ToDoGi (görev + liste + ev bütçesi; todogi-be/talay.yaml): kayıt açık (uygulamanın kendi formu), giriş auth-gateway
 # üzerinden. Realm elle kurulmuştu (gateway'in varsayılan realm'i: /auth/* ve /auth/todogi/*); D19 gereği eski kullanıcılar
 # korunmaz ama realm yeniden oluşturulmaz, import edilir. İstemciler mevcut adlarıyla kalır: gateway varsayılan realm ayarı
-# KEYCLOAK_CLIENT_ID=auth ve yönetim istemcisi auth-gateway-admin bu adlara bağlı. Mobil oturum offline token
-# (GATEWAY_REALMS_TODOGI_OFFLINEACCESS, İP-04). Google/Apple ve realm SMTP'si İP-04'te.
+# KEYCLOAK_CLIENT_ID=auth ve yönetim istemcisi auth-gateway-admin bu adlara bağlı. Mobil oturum offline token (todogi
+# gateway'in varsayılan realm'i olduğundan KEYCLOAK_OFFLINE_ACCESS=true, İP-04). E-posta onayı ve parola sıfırlama
+# gateway bağlantılarıyla (Keycloak sayfası yok): verify_email false kalır, kullanıcı onaylamadan da girer (prototip A6).
+# Realm SMTP'si yalnız yönetim konsolundan elle eylem için: scripts/configure-realm-email.sh. Google/Apple: todogi_social_login.
 module "todogi_identity" {
   source = "../../modules/application-identity"
 
@@ -191,6 +193,8 @@ module "todogi_identity" {
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "todogi", null)
   sso_session_idle_timeout    = "720h"
   offline_access_enabled      = true
+  verify_email                = false
+  social_login                = var.todogi_social_login
 }
 
 # Elle kurulmuş realm ve istemcileri (2026-11-22 admin API'den okunan kimlikler). Apply sonrası kaldırılabilir.
