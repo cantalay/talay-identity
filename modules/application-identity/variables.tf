@@ -147,6 +147,28 @@ variable "social_login" {
   default = null
 }
 
+variable "social_link_existing_accounts" {
+  description = <<-EOT
+    İlk sosyal girişte aynı e-postalı mevcut hesaba bağlama. "verified-only" (varsayılan; talay-keycloak-providers
+    idp-auto-link-verified-only): yalnız e-postası onaylı, e-postası aynı ve sağlayıcının kefil olduğu hesaba bağlar; değilse
+    bağlamaz, istemciye error_description=account_exists_unverified (ya da account_exists) döner. "any": Keycloak idp-auto-link,
+    doğrulamadan bağlar; verify_email=false realm'de önceden hesap ele geçirmeye açıktır, yalnız eklentiler yüklenemiyorsa.
+  EOT
+  type        = string
+  default     = "verified-only"
+
+  validation {
+    condition     = contains(["verified-only", "any"], var.social_link_existing_accounts)
+    error_message = "social_link_existing_accounts \"verified-only\" ya da \"any\" olmalı."
+  }
+}
+
+variable "social_unverified_guard" {
+  description = "Giriş sonrası akış social-post-login (talay-keycloak-providers idp-unverified-account-guard): her sosyal girişte, bağ eskiden kurulmuş olsa da, parolalı ve e-postası onaylanmamış hesaba oturum açtırmaz (istemciye error_description=account_exists_unverified)."
+  type        = bool
+  default     = true
+}
+
 variable "verify_email" {
   description = "Keycloak'ın kendi e-posta doğrulama zorunluluğu: true iken doğrulanmamış kullanıcı giriş yapamaz ve Keycloak doğrulama e-postası (Keycloak sayfası) ister; realm SMTP'si (scripts/configure-realm-email.sh) gerekir. Gateway doğrulaması (auth-gateway GATEWAY_MAIL_REALMS_<REALM>_VERIFYURL) kullanan realm'lerde false kalır."
   type        = bool
