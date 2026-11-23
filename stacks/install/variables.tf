@@ -35,7 +35,7 @@ variable "vault_keycloak_key" {
 variable "providers_image" {
   description = "Keycloak eklentileri imajı (github.com/cantalay/talay-keycloak-providers, etiket + digest; herkese açık). Boş: eklenti yok."
   type        = string
-  default     = "ghcr.io/cantalay/talay-keycloak-providers:sha-a6b98f3@sha256:6405652e92211105069d73d7d934eb8ef0f3a1de60d0563ff37a9ff3ffbcd865"
+  default     = "ghcr.io/cantalay/talay-keycloak-providers:sha-3855bfc@sha256:bec99fed00dcc5041c4569992f275bf15651ef6088ad0baf174167d35db34bd0"
 }
 
 variable "vault_realm_secrets_key" {
