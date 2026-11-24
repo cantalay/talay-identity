@@ -49,7 +49,7 @@ variable "vitafinder_admin_url" {
 }
 
 variable "todogi_web_url" {
-  description = "ToDoGi web adresi (gateway dönüşü /giris/geri ve PKCE yedek istemcisi)."
+  description = "ToDoGi web adresi (gateway dönüşü /signin/callback ve PKCE yedek istemcisi)."
   type        = string
   default     = "https://todogi.net"
 }

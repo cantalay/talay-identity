@@ -189,7 +189,7 @@ module "todogi_identity" {
   gateway_client_enabled      = true
   gateway_client_id           = "auth"
   gateway_admin_client_id     = "auth-gateway-admin"
-  gateway_redirect_uris       = ["${var.todogi_web_url}/giris/geri", "todogi://auth"]
+  gateway_redirect_uris       = ["${var.todogi_web_url}/signin/callback", "todogi://auth"]
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "todogi", null)
   sso_session_idle_timeout    = "720h"
   offline_access_enabled      = true
