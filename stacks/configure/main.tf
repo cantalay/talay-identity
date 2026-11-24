@@ -217,3 +217,37 @@ import {
   to = module.todogi_identity.keycloak_default_roles.application
   id = "todogi/9ec75fb6-4fc6-4ca3-a03d-8e415a745917"
 }
+
+# ToDoGi worker yönetim istemcisi (İP-20 hesap silme): girişsiz e-posta yolu ve işletim yolunda Keycloak kullanıcısını
+# yönetim API'siyle siler (client_credentials). Yalnız realm-management manage-users; gateway yönetim istemcisinden
+# (query/view-users) dar. Sır Vault kv/apps/todogi/worker KEYCLOAK_ADMIN_CLIENT_SECRET'tan TF_VAR ile (write-only).
+resource "keycloak_openid_client" "todogi_worker" {
+  realm_id  = module.todogi_identity.realm
+  client_id = "todogi-worker"
+  name      = "ToDoGi Worker"
+  enabled   = true
+
+  access_type                  = "CONFIDENTIAL"
+  service_accounts_enabled     = true
+  standard_flow_enabled        = false
+  implicit_flow_enabled        = false
+  direct_access_grants_enabled = false
+  valid_redirect_uris          = []
+  web_origins                  = []
+  # Yalnız aşağıdaki realm-management rolü token'a girer; ek yetki vermez.
+  full_scope_allowed       = true
+  client_secret_wo         = var.todogi_worker_client_secret
+  client_secret_wo_version = "1"
+}
+
+data "keycloak_openid_client" "todogi_realm_management" {
+  realm_id  = module.todogi_identity.realm
+  client_id = "realm-management"
+}
+
+resource "keycloak_openid_client_service_account_role" "todogi_worker" {
+  realm_id                = module.todogi_identity.realm
+  service_account_user_id = keycloak_openid_client.todogi_worker.service_account_user_id
+  client_id               = data.keycloak_openid_client.todogi_realm_management.id
+  role                    = "manage-users"
+}

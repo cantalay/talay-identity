@@ -108,3 +108,11 @@ variable "todogi_social_login" {
   #   apple  = { client_id = "com.cantalay.todogi.signin", team_id = "<TEAMID>", key_id = "<KEYID>", p8_ref = "$${vault.applep8}" }
   default = null
 }
+
+variable "todogi_worker_client_secret" {
+  description = "todogi-worker (İP-20 hesap silme) client secret'ı (write-only). Vault kv/apps/todogi/worker KEYCLOAK_ADMIN_CLIENT_SECRET'tan TF_VAR ile verilir; state'e yazılmaz."
+  type        = string
+  default     = null
+  sensitive   = true
+  ephemeral   = true
+}
