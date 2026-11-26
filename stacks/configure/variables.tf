@@ -120,6 +120,14 @@ variable "todogi_social_login" {
   }
 }
 
+variable "todogi_apple_p8" {
+  description = "ToDoGi Apple .p8 içeriği (write-only, ephemeral; state'e yazılmaz). Apple eklentisi kasa referansını çözmediğinden zorunlu: Vault kv/platform/keycloak-realm-vault todogi_applep8 alanından TF_VAR_todogi_apple_p8 ile verilir."
+  type        = string
+  default     = null
+  sensitive   = true
+  ephemeral   = true
+}
+
 variable "todogi_worker_client_secret" {
   description = "todogi-worker (İP-20 hesap silme) client secret'ı (write-only). Vault kv/apps/todogi/worker KEYCLOAK_ADMIN_CLIENT_SECRET'tan TF_VAR ile verilir; state'e yazılmaz."
   type        = string

@@ -190,11 +190,13 @@ module "todogi_identity" {
   gateway_client_id           = "auth"
   gateway_admin_client_id     = "auth-gateway-admin"
   gateway_redirect_uris       = ["${var.todogi_web_url}/signin/callback", "todogi://auth"]
+  gateway_base_url            = var.todogi_web_url
   gateway_admin_client_secret = lookup(var.gateway_admin_client_secrets, "todogi", null)
   sso_session_idle_timeout    = "720h"
   offline_access_enabled      = true
   verify_email                = false
   social_login                = var.todogi_social_login
+  social_apple_p8             = var.todogi_apple_p8
 }
 
 # Elle kurulmuş realm ve istemcileri (2026-11-22 admin API'den okunan kimlikler). Apply sonrası kaldırılabilir.

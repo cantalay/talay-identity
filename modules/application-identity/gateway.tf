@@ -15,6 +15,9 @@ resource "keycloak_openid_client" "gateway" {
   implicit_flow_enabled        = false
   service_accounts_enabled     = false
   valid_redirect_uris          = var.gateway_redirect_uris
+  root_url                     = var.gateway_base_url
+  base_url                     = var.gateway_base_url
+  web_origins                  = var.gateway_base_url == null ? null : [var.gateway_base_url]
   full_scope_allowed           = true
   access_token_lifespan        = "300"
 }

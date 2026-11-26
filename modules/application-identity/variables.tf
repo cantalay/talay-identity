@@ -85,6 +85,12 @@ variable "gateway_admin_client_secret" {
   ephemeral   = true
 }
 
+variable "gateway_base_url" {
+  description = "Gateway client'ının kök/ana adresi (Keycloak hata sayfasındaki \"Uygulamaya dön\" buraya gider) ve tek web origin'i. null: yönetilmez (import edilen eski istemcide eski alan adı kalır)."
+  type        = string
+  default     = null
+}
+
 variable "gateway_admin_client_secret_version" {
   description = "Secret'ı döndürmek için artırın."
   type        = string
@@ -145,6 +151,25 @@ variable "social_login" {
     }))
   })
   default = null
+}
+
+variable "social_apple_p8" {
+  description = <<-EOT
+    Apple .p8 anahtar içeriği (write-only, ephemeral; state'e yazılmaz). Apple eklentisi (klausbetz) Client Secret'ı kasa
+    referansı olarak ÇÖZMEZ: kasa referansı metnini anahtar diye okur ("Unable to generate JWS", Apple invalid_client;
+    2026-11-26 todogi). Bu yüzden Apple açıkken zorunludur: Vault kv/platform/keycloak-realm-vault <realm>_applep8'den TF_VAR
+    ile verilir. Başlık/son satırları ve satır sonları burada atılır (eklenti gerçek satır sonlarını silmez).
+  EOT
+  type        = string
+  default     = null
+  sensitive   = true
+  ephemeral   = true
+}
+
+variable "social_apple_p8_version" {
+  description = "Apple .p8 anahtarını döndürmek için artırın (write-only değer yalnız sürüm değişince yazılır)."
+  type        = string
+  default     = "1"
 }
 
 variable "social_link_existing_accounts" {

@@ -110,13 +110,15 @@ resource "keycloak_oidc_google_identity_provider" "google" {
 resource "keycloak_oidc_identity_provider" "apple" {
   count = local.apple_enabled ? 1 : 0
 
-  realm                         = keycloak_realm.application.id
-  alias                         = "apple"
-  display_name                  = "Apple"
-  provider_id                   = "apple"
-  enabled                       = true
-  client_id                     = var.social_login.apple.client_id
-  client_secret                 = var.social_login.apple.p8_ref
+  realm        = keycloak_realm.application.id
+  alias        = "apple"
+  display_name = "Apple"
+  provider_id  = "apple"
+  enabled      = true
+  client_id    = var.social_login.apple.client_id
+  # Eklenti kasa referansını çözmez → anahtar write-only verilir (variables.tf social_apple_p8). p8_ref kullanılmaz.
+  client_secret_wo              = var.social_apple_p8 == null ? null : join("", regexall("[A-Za-z0-9+/=]", replace(replace(var.social_apple_p8, "-----BEGIN PRIVATE KEY-----", ""), "-----END PRIVATE KEY-----", "")))
+  client_secret_wo_version      = var.social_apple_p8_version
   authorization_url             = "https://appleid.apple.com/auth/authorize"
   token_url                     = "https://appleid.apple.com/auth/token"
   trust_email                   = true
@@ -130,5 +132,12 @@ resource "keycloak_oidc_identity_provider" "apple" {
   extra_config = {
     teamId = var.social_login.apple.team_id
     keyId  = var.social_login.apple.key_id
+  }
+
+  lifecycle {
+    precondition {
+      condition     = var.social_apple_p8 != null
+      error_message = "Apple girişi açık: .p8 anahtarı TF_VAR ile verilmeli (Vault kv/platform/keycloak-realm-vault <realm>_applep8); eklenti kasa referansını çözmez."
+    }
   }
 }
