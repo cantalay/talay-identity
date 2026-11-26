@@ -106,7 +106,18 @@ variable "todogi_social_login" {
   # silmesin. Örnek:
   #   google = { client_id = "<id>.apps.googleusercontent.com", client_secret_ref = "$${vault.googleclientsecret}" }
   #   apple  = { client_id = "com.cantalay.todogi.signin", team_id = "<TEAMID>", key_id = "<KEYID>", p8_ref = "$${vault.applep8}" }
-  default = null
+  default = {
+    google = {
+      client_id         = "88900538260-5t2ikgpcir7u1t87eoiofj1th4i2gi35.apps.googleusercontent.com"
+      client_secret_ref = "$${vault.googleclientsecret}"
+    }
+    apple = {
+      client_id = "com.cantalay.todogi.signin"
+      team_id   = "LPQN4SDJY6"
+      key_id    = "3KC33ZB69B"
+      p8_ref    = "$${vault.applep8}"
+    }
+  }
 }
 
 variable "todogi_worker_client_secret" {
