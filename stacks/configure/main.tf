@@ -197,6 +197,7 @@ module "todogi_identity" {
   verify_email                = false
   social_login                = var.todogi_social_login
   social_apple_p8             = var.todogi_apple_p8
+  person_name_optional        = true
 }
 
 # Elle kurulmuş realm ve istemcileri (2026-11-22 admin API'den okunan kimlikler). Apply sonrası kaldırılabilir.
