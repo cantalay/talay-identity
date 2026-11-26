@@ -172,6 +172,12 @@ variable "social_apple_p8_version" {
   default     = "1"
 }
 
+variable "person_name_optional" {
+  description = "Ad ve soyadı isteğe bağlı yapar (user-profile.tf). Sosyal girişte sağlayıcı ad vermezse Keycloak kendi profil sayfasını göstermesin diye; ad uygulamada istenir."
+  type        = bool
+  default     = false
+}
+
 variable "social_link_existing_accounts" {
   description = <<-EOT
     İlk sosyal girişte aynı e-postalı mevcut hesaba bağlama. "verified-only" (varsayılan; talay-keycloak-providers
